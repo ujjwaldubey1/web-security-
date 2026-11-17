@@ -424,7 +424,7 @@ export default function Approach() {
                 }}
               />
 
-              <div className="space-y-8 sm:space-y-10">
+              <div className="space-y-7 pb-8 sm:space-y-9 sm:pb-12">
                 {steps.map((step, i) => {
                   const on = active === i;
                   return (
@@ -434,7 +434,7 @@ export default function Approach() {
                         stepRefs.current[i] = el;
                       }}
                       data-step={i}
-                      className="relative py-1"
+                      className="relative scroll-mt-28 py-1"
                     >
                       <div className="relative w-full max-w-xl pl-11 sm:pl-14">
                         <span
