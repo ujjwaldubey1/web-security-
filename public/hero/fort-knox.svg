@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 720" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="blueWash" x1="120" y1="80" x2="620" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6" stop-opacity="0.18"/>
+      <stop offset="0.55" stop-color="#3B82F6" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="stone" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M0 8L8 0" stroke="#111" stroke-opacity="0.08" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Blueprint arcs & grids -->
+  <g stroke="#3B82F6" stroke-opacity="0.45" stroke-width="1" fill="none">
+    <circle cx="310" cy="360" r="210"/>
+    <circle cx="310" cy="360" r="270"/>
+    <circle cx="310" cy="360" r="330"/>
+    <path d="M40 40 H860 M40 80 H860 M40 120 H860"/>
+    <path d="M60 20 V700 M100 20 V700 M140 20 V700"/>
+    <path d="M20 520 H520"/>
+    <path d="M250 40 V680"/>
+  </g>
+
+  <rect x="70" y="150" width="520" height="430" fill="url(#blueWash)"/>
+
+  <!-- Ground / podium -->
+  <path d="M40 560 H640 L610 590 H70 Z" fill="#f4f4f4" stroke="#111" stroke-width="1.4"/>
+  <path d="M110 560 H560 L545 575 H125 Z" stroke="#111" stroke-width="1.2"/>
+  <path d="M145 575 H520 L508 588 H157 Z" stroke="#111" stroke-width="1.1"/>
+  <path d="M175 588 H490 L480 600 H185 Z" stroke="#111" stroke-width="1.1"/>
+
+  <!-- Main block -->
+  <path d="M120 300 L160 250 H500 L540 300 V520 H120 Z" fill="#fff" stroke="#111" stroke-width="1.8"/>
+  <path d="M120 300 L160 250 H500 L540 300" fill="url(#stone)" fill-opacity="0.5"/>
+  <rect x="120" y="300" width="420" height="220" fill="url(#stone)" fill-opacity="0.35"/>
+
+  <!-- Chamfered corners -->
+  <path d="M120 300 L145 320 V500 L120 520" stroke="#111" stroke-width="1.2"/>
+  <path d="M540 300 L515 320 V500 L540 520" stroke="#111" stroke-width="1.2"/>
+
+  <!-- Stepped roof -->
+  <path d="M175 250 H485 L465 220 H195 Z" fill="#fafafa" stroke="#111" stroke-width="1.5"/>
+  <path d="M210 220 H450 L435 198 H225 Z" fill="#fff" stroke="#111" stroke-width="1.4"/>
+  <path d="M250 198 H410 L398 180 H262 Z" stroke="#111" stroke-width="1.3"/>
+
+  <!-- Upper windows -->
+  <g stroke="#111" stroke-width="1.1">
+    <rect x="195" y="270" width="28" height="18"/>
+    <rect x="245" y="270" width="28" height="18"/>
+    <rect x="295" y="270" width="28" height="18"/>
+    <rect x="345" y="270" width="28" height="18"/>
+    <rect x="395" y="270" width="28" height="18"/>
+    <rect x="445" y="270" width="28" height="18"/>
+  </g>
+
+  <!-- Lower windows -->
+  <g stroke="#111" stroke-width="1.15">
+    <rect x="175" y="360" width="36" height="54"/>
+    <rect x="230" y="360" width="36" height="54"/>
+    <rect x="400" y="360" width="36" height="54"/>
+    <rect x="455" y="360" width="36" height="54"/>
+    <rect x="175" y="440" width="36" height="40"/>
+    <rect x="230" y="440" width="36" height="40"/>
+    <rect x="400" y="440" width="36" height="40"/>
+    <rect x="455" y="440" width="36" height="40"/>
+  </g>
+
+  <!-- Portal -->
+  <rect x="290" y="350" width="80" height="170" fill="#111" stroke="#111"/>
+  <rect x="298" y="358" width="64" height="154" fill="none" stroke="#3B82F6" stroke-opacity="0.55"/>
+  <path d="M300 370 H368 M300 390 H368" stroke="#3B82F6" stroke-opacity="0.35"/>
+  <circle cx="330" cy="420" r="8" stroke="#3B82F6" stroke-opacity="0.7"/>
+
+  <!-- Corner guard boxes -->
+  <g stroke="#111" stroke-width="1.3" fill="#fff">
+    <path d="M95 480 L120 465 L145 480 V520 L95 520 Z"/>
+    <path d="M515 480 L540 465 L565 480 V520 L515 520 Z"/>
+    <path d="M95 250 L120 235 L145 250 V285 L95 285 Z"/>
+    <path d="M515 250 L540 235 L565 250 V285 L515 285 Z"/>
+  </g>
+  <g stroke="#111" stroke-width="1">
+    <rect x="108" y="495" width="14" height="10"/>
+    <rect x="528" y="495" width="14" height="10"/>
+    <rect x="108" y="258" width="14" height="10"/>
+    <rect x="528" y="258" width="14" height="10"/>
+  </g>
+
+  <!-- Fence suggestion -->
+  <g stroke="#111" stroke-opacity="0.55" stroke-width="1">
+    <path d="M40 610 H620"/>
+    <path d="M60 610 V640 M100 610 V640 M140 610 V640 M180 610 V640 M220 610 V640 M260 610 V640 M300 610 V640 M340 610 V640 M380 610 V640 M420 610 V640 M460 610 V640 M500 610 V640 M540 610 V640 M580 610 V640"/>
+    <path d="M40 640 H620"/>
+  </g>
+
+  <!-- Dimension ticks -->
+  <g stroke="#3B82F6" stroke-opacity="0.55" stroke-width="1">
+    <path d="M120 640 V660 M540 640 V660 M120 650 H540"/>
+    <path d="M70 250 H55 M70 520 H55 M62 250 V520"/>
+  </g>
+</svg>
