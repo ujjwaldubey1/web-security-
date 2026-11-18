@@ -79,10 +79,10 @@ function Node({
     <div
       className={`relative rounded-md border bg-white px-2.5 py-2 transition-all duration-500 ${
         active
-          ? "border-[#D8DEE8] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_6px_16px_rgba(59,130,246,0.08)]"
+          ? "border-blueprint/40 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_0_0_3px_rgba(59,130,246,0.1)]"
           : dimmed
-            ? "border-[#E6E9EF] opacity-[0.38]"
-            : "border-[#E6E9EF] opacity-80 shadow-[0_1px_2px_rgba(15,23,42,0.03)]"
+            ? "border-[#E6E9EF] opacity-[0.32]"
+            : "border-[#E6E9EF] opacity-75 shadow-[0_1px_2px_rgba(15,23,42,0.03)]"
       } ${className}`}
     >
       <SelectFrame show={active} />
@@ -94,6 +94,8 @@ function Node({
 function FlowDiagram({ active }: { active: number }) {
   const focus: Focus = steps[active]?.focus ?? "sources";
   const is = (f: Focus) => focus === f;
+  const line = (...keys: Focus[]) =>
+    keys.includes(focus) ? "flow-line flow-line-active" : "flow-line";
 
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden rounded-xl border border-[#D9DEE7] bg-[#F3F4F6]">
@@ -101,10 +103,6 @@ function FlowDiagram({ active }: { active: number }) {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(59,130,246,0.18)_1px,transparent_0)] bg-[size:14px_14px] opacity-[0.32]" />
 
       <div className="relative z-10 flex min-h-0 flex-1 flex-col p-3 sm:p-4">
-        {/*
-          Absolute SVG in the gutters only — nodes sit above in a 3-col grid
-          so curves never paint across card faces.
-        */}
         <div className="relative min-h-0 flex-1">
           <svg
             className="pointer-events-none absolute inset-0 h-full w-full"
@@ -113,49 +111,24 @@ function FlowDiagram({ active }: { active: number }) {
             fill="none"
             aria-hidden
           >
-            {/* Left gutter → hub */}
-            <path
-              className={is("sources") ? "flow-line flow-line-active" : "flow-line"}
-              d="M168 78 H220 C248 78, 248 168, 276 168"
-            />
-            <path
-              className={
-                is("sources") || is("audit") ? "flow-line flow-line-active" : "flow-line"
-              }
-              d="M168 210 H276"
-            />
-            <path
-              className={
-                is("sources") || is("harden") ? "flow-line flow-line-active" : "flow-line"
-              }
-              d="M168 342 H220 C248 342, 248 252, 276 252"
-            />
+            {/* Step 1 — sources into hub */}
+            <path className={line("sources")} d="M168 78 H220 C248 78, 248 168, 276 168" />
+            <path className={line("sources")} d="M168 210 H276" />
+            <path className={line("sources")} d="M168 342 H220 C248 342, 248 252, 276 252" />
 
-            {/* Trust → hub (center column only) */}
-            <path
-              className={is("vault") ? "flow-line flow-line-active" : "flow-line"}
-              d="M320 118 V148"
-            />
+            {/* Step 2 — audit path */}
+            <path className={line("audit")} d="M168 210 H276" />
+            <path className={line("audit")} d="M364 168 C392 168, 392 62, 420 62 H472" />
 
-            {/* Hub → right gutter */}
-            <path
-              className={is("audit") ? "flow-line flow-line-active" : "flow-line"}
-              d="M364 168 C392 168, 392 62, 420 62 H472"
-            />
-            <path
-              className={is("harden") ? "flow-line flow-line-active" : "flow-line"}
-              d="M364 210 H472"
-            />
-            <path
-              className={
-                is("harden") || is("vault") ? "flow-line flow-line-active" : "flow-line"
-              }
-              d="M364 252 C392 252, 392 300, 420 300 H472"
-            />
-            <path
-              className={is("vault") ? "flow-line flow-line-active" : "flow-line"}
-              d="M364 252 C392 252, 392 358, 420 358 H472"
-            />
+            {/* Step 3 — harden path */}
+            <path className={line("harden")} d="M168 342 H220 C248 342, 248 252, 276 252" />
+            <path className={line("harden")} d="M364 210 H472" />
+            <path className={line("harden")} d="M364 252 C392 252, 392 300, 420 300 H472" />
+
+            {/* Step 4 — vault / trust */}
+            <path className={line("vault")} d="M320 118 V148" />
+            <path className={line("vault")} d="M364 252 C392 252, 392 358, 420 358 H472" />
+            <path className={line("vault")} d="M364 252 C392 252, 392 300, 420 300 H472" />
           </svg>
 
           <div className="relative z-10 grid h-full grid-cols-[minmax(0,1fr)_minmax(7.5rem,0.78fr)_minmax(0,1.12fr)] gap-x-3 sm:gap-x-5 lg:gap-x-6">
@@ -174,10 +147,7 @@ function FlowDiagram({ active }: { active: number }) {
                   </div>
                 </div>
               </Node>
-              <Node
-                active={is("sources") || is("audit")}
-                dimmed={!(is("sources") || is("audit"))}
-              >
+              <Node active={is("sources") || is("audit")} dimmed={!(is("sources") || is("audit"))}>
                 <div className="flex items-center gap-2">
                   <SiEthereum className="h-4 w-4 shrink-0 text-[#627EEA]" />
                   <div className="min-w-0">
@@ -252,21 +222,17 @@ function FlowDiagram({ active }: { active: number }) {
                 </div>
               </Node>
 
-              <div
-                className={`relative w-full max-w-[8.5rem] rounded-md border border-[#1a1a1a] bg-[#111111] px-3 py-2.5 text-center text-white transition-all duration-500 ${
-                  is("vault")
-                    ? "shadow-[0_0_0_3px_rgba(59,130,246,0.2)]"
-                    : "shadow-[0_6px_18px_rgba(0,0,0,0.16)]"
-                }`}
-              >
-                <SelectFrame show={is("vault") || is("sources")} />
+              <div className="relative w-full max-w-[8.5rem] rounded-md border border-[#E6E9EF] bg-white px-3 py-2.5 text-center shadow-[0_1px_2px_rgba(15,23,42,0.03)] transition-all duration-500">
+                <SelectFrame show />
                 <div className="mx-auto mb-1 flex h-3 items-end justify-center gap-[2px]">
-                  <span className="h-1.5 w-[2px] rounded-[1px] bg-white" />
-                  <span className="h-3 w-[2px] rounded-[1px] bg-white" />
-                  <span className="h-2 w-[2px] rounded-[1px] bg-white" />
+                  <span className="h-1.5 w-[2px] rounded-[1px] bg-foreground/80" />
+                  <span className="h-3 w-[2px] rounded-[1px] bg-foreground/80" />
+                  <span className="h-2 w-[2px] rounded-[1px] bg-foreground/80" />
                 </div>
-                <p className="text-[12px] font-semibold tracking-tight">knox</p>
-                <p className="mt-0.5 text-[9px] text-white/55">parent vault</p>
+                <p className="text-[12px] font-semibold tracking-tight text-foreground">
+                  knox
+                </p>
+                <p className="mt-0.5 text-[9px] text-muted">parent vault</p>
               </div>
             </div>
 
@@ -305,9 +271,7 @@ function FlowDiagram({ active }: { active: number }) {
                       </p>
                     </div>
                   </div>
-                  <span className="font-mono text-[9px] tabular-nums text-muted">
-                    0.1840
-                  </span>
+                  <span className="font-mono text-[9px] tabular-nums text-muted">0.1840</span>
                 </div>
               </Node>
               <Node
@@ -326,9 +290,7 @@ function FlowDiagram({ active }: { active: number }) {
                       </p>
                     </div>
                   </div>
-                  <span className="font-mono text-[9px] tabular-nums text-muted">
-                    0.1990
-                  </span>
+                  <span className="font-mono text-[9px] tabular-nums text-muted">0.1990</span>
                 </div>
               </Node>
               <Node active={is("vault")} dimmed={!is("vault")}>
@@ -344,9 +306,7 @@ function FlowDiagram({ active }: { active: number }) {
                       </p>
                     </div>
                   </div>
-                  <span className="font-mono text-[9px] tabular-nums text-muted">
-                    0.2150
-                  </span>
+                  <span className="font-mono text-[9px] tabular-nums text-muted">0.2150</span>
                 </div>
               </Node>
             </div>
@@ -370,61 +330,63 @@ export default function Approach() {
     const nodes = stepRefs.current.filter(Boolean) as HTMLDivElement[];
     if (!nodes.length) return;
 
-    const pickActive = () => {
-      const mid = window.innerHeight * 0.42;
+    const update = () => {
+      const focusY = window.innerHeight * 0.4;
       let best = 0;
       let bestDist = Infinity;
+
       nodes.forEach((node, i) => {
         const rect = node.getBoundingClientRect();
-        const center = rect.top + rect.height / 2;
-        const dist = Math.abs(center - mid);
+        const center = rect.top + rect.height * 0.3;
+        const dist = Math.abs(center - focusY);
         if (dist < bestDist) {
           bestDist = dist;
           best = i;
         }
       });
-      setActive(best);
+
+      setActive((prev) => (prev === best ? prev : best));
     };
 
-    pickActive();
-    window.addEventListener("scroll", pickActive, { passive: true });
-    window.addEventListener("resize", pickActive);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
     return () => {
-      window.removeEventListener("scroll", pickActive);
-      window.removeEventListener("resize", pickActive);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
     };
   }, []);
 
   return (
     <section id="approach" className="scroll-mt-16 sm:scroll-mt-20">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10 xl:gap-12">
-          {/* Left: intro + full-viewport steps */}
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(240px,0.4fr)_minmax(0,0.6fr)] lg:gap-10 xl:gap-14">
+          {/* Left: Meridian format — big gap under heading, compact steps */}
           <div className="relative order-2 lg:order-1">
-            <div className="mb-6 max-w-2xl pt-2 lg:mb-2 lg:pt-4">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-blueprint">
+            <div className="max-w-[26rem]">
+              <p className="text-[12px] font-medium uppercase tracking-[0.16em] text-[#2563EB]">
                 Approach
               </p>
-              <h2 className="mt-3 font-serif text-[2.15rem] tracking-tight text-foreground sm:text-4xl md:text-[2.75rem] md:leading-[1.12]">
+              <h2 className="mt-3 font-serif text-[2.35rem] tracking-tight text-foreground sm:text-[2.7rem] md:text-[3rem] md:leading-[1.05]">
                 One vault, start to finish
               </h2>
-              <p className="mt-4 max-w-lg text-base leading-relaxed text-muted sm:text-lg">
-                Scroll the steps. Knox routes what you ship through audit, surface
-                hardening, and a shared trust layer — as one visible flow.
+              <p className="mt-4 max-w-[22rem] text-[15px] leading-snug text-foreground/65 sm:text-base">
+                What happens when you bring code into Knox — how audits,
+                hardening, and trust move through one vault.
               </p>
             </div>
 
-            <div className="relative mt-8">
-              <div className="absolute bottom-4 left-[13px] top-2 w-px bg-border/80 sm:left-[15px]" />
+            <div className="relative mt-16 max-w-[26rem] sm:mt-20">
+              <div className="absolute bottom-2 left-0 top-1.5 w-px bg-[#D0D0D4]" />
               <div
-                className="absolute left-[13px] top-2 w-px origin-top bg-blueprint transition-all duration-400 sm:left-[15px]"
+                className="absolute left-0 top-1.5 w-px origin-top bg-[#2563EB] transition-all duration-500"
                 style={{
                   height: `${((active + 1) / steps.length) * 100}%`,
                   maxHeight: "calc(100% - 0.5rem)",
                 }}
               />
 
-              <div className="space-y-7 pb-8 sm:space-y-9 sm:pb-12">
+              <div className="space-y-9 pl-5 pb-8 sm:space-y-10 sm:pl-6 lg:pb-12">
                 {steps.map((step, i) => {
                   const on = active === i;
                   return (
@@ -433,30 +395,21 @@ export default function Approach() {
                       ref={(el) => {
                         stepRefs.current[i] = el;
                       }}
-                      data-step={i}
-                      className="relative scroll-mt-28 py-1"
+                      className="relative scroll-mt-28"
                     >
-                      <div className="relative w-full max-w-xl pl-11 sm:pl-14">
+                      <h3 className="text-[17px] font-semibold leading-snug tracking-tight text-foreground sm:text-[18px]">
                         <span
-                          className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full text-[12px] font-semibold transition-colors duration-300 sm:h-8 sm:w-8 sm:text-[13px] ${
-                            on
-                              ? "bg-blueprint text-white"
-                              : "bg-[#D9DEE6] text-foreground/70"
+                          className={`mr-1.5 font-semibold tabular-nums transition-colors duration-300 ${
+                            on ? "text-[#2563EB]" : "text-foreground/45"
                           }`}
                         >
                           {i + 1}
                         </span>
-                        <h3
-                          className={`font-serif text-[1.55rem] tracking-tight transition-colors duration-300 sm:text-[1.8rem] md:text-[1.95rem] md:leading-[1.2] ${
-                            on ? "text-foreground" : "text-foreground"
-                          }`}
-                        >
-                          {step.title}
-                        </h3>
-                        <p className="mt-3 text-[15px] leading-relaxed text-muted sm:text-base">
-                          {step.body}
-                        </p>
-                      </div>
+                        {step.title}
+                      </h3>
+                      <p className="mt-1 max-w-[23rem] text-[14px] leading-snug text-foreground/60 sm:text-[15px]">
+                        {step.body}
+                      </p>
                     </div>
                   );
                 })}
@@ -464,9 +417,9 @@ export default function Approach() {
             </div>
           </div>
 
-          {/* Right: compact sticky diagram */}
-          <div className="order-1 sticky top-[4.5rem] z-10 mx-auto w-full max-w-xl lg:order-2 lg:mx-0 lg:max-w-none lg:top-24">
-            <div className="h-[340px] sm:h-[380px] lg:h-[min(58vh,460px)]">
+          {/* Right: sticky graph — aligned with heading */}
+          <div className="order-1 sticky top-24 z-10 self-start lg:order-2 lg:top-28">
+            <div className="h-[320px] sm:h-[380px] lg:h-[min(62vh,480px)]">
               <FlowDiagram active={active} />
             </div>
           </div>
